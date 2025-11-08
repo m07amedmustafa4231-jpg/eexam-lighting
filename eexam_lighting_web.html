@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>امتحان نظم الإضاءة الداخلية</title>
+<style>
+body { font-family: Arial, sans-serif; background-color: #f5f8ff; color: #00274d; margin: 0; padding: 0; }
+.container { max-width: 900px; margin: auto; padding: 20px; }
+h2 { color: #003366; }
+textarea { width: 100%; height: 100px; margin-bottom: 10px; }
+button { background-color: #004080; color: white; border: none; padding: 10px 20px; cursor: pointer; font-size: 16px; }
+button:hover { background-color: #0066cc; }
+.page { display: none; }
+.page.active { display: block; }
+.result { background-color: #d9f0ff; padding: 20px; margin-top: 20px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div id="essayPage" class="page active">
+<h2>الأسئلة المقالية</h2>
+<form id="essayForm">
+<div>
+<label>أهمية الإضاءة وتأثيرها البيولوجي:</label>
+<textarea name="q1"></textarea>
+</div>
+<div>
+<label>التباين والوهج:</label>
+<textarea name="q2"></textarea>
+</div>
+<div>
+<label>أنواع الإضاءة من حيث الأسلوب والخصائص:</label>
+<textarea name="q3"></textarea>
+</div>
+<div>
+<label>نظم الإضاءة حسب الوظيفة:</label>
+<textarea name="q4"></textarea>
+</div>
+<div>
+<label>أهداف الإضاءة الطبيعية والعوامل المعمارية:</label>
+<textarea name="q5"></textarea>
+</div>
+<div>
+<label>كاسرات الشمس وأنواعها:</label>
+<textarea name="q6"></textarea>
+</div>
+<div>
+<label>أرفف الإضاءة (Light Shelves):</label>
+<textarea name="q7"></textarea>
+</div>
+<div>
+<label>أشكال النوافذ وتأثيرها:</label>
+<textarea name="q8"></textarea>
+</div>
+<div>
+<label>كفاءة المصباح (Efficacy):</label>
+<textarea name="q9"></textarea>
+</div>
+<div>
+<label>أنابيب ضوء الشمس:</label>
+<textarea name="q10"></textarea>
+</div>
+<button type="button" onclick="startFillIn()">الانتقال لأسئلة الأكمل</button>
+</form>
+</div>
+
+<div id="fillPage" class="page">
+<h2 id="fillQ"></h2>
+<input type="text" id="fillAns" placeholder="اكتب إجابتك هنا">
+<br><br>
+<button onclick="nextFill()">التالي</button>
+</div>
+
+<div id="resultPage" class="page">
+<h2>النتيجة</h2>
+<div id="resultContainer" class="result"></div>
+</div>
+
+<script>
+const fillQuestions = [
+"ما يقارب من ______ % من جميع المعلومات التي نحصل عليها من خلال حياتنا تكون من خلال حاسة البصر.",
+"______ هو الوسط الذي يجعل عالم الرؤية فعال.",
+"الضوء الأبيض البارد يحفز مادة في الجسم إسمها ______ وهي ______ الجسم.",
+"الضوء الأبيض الدافيء يحفز مادة بالجسم إسمها ______ وهي تحفز الجسم على ______.",
+"تأثير لون الضوء على الإنسان هو تأثير ______.",
+"______ هو عبارة عن كمية الضوء المنبعث من مصدر ضوئي في وحدة الزمن وفي جميع الاتجاهات.",
+"وحدة قياس الفيض الضوئي هي ______.",
+"______ هي عبارة عن معدل توزيع الضوء على السطح المضاء.",
+"وحدة قياس شدة الإضاءة هي ______.",
+"الوهج هو ______ عالي جداً بين ______ مختلفين في النصوع.",
+"وجود تباين ______ جداً يجهد العين ويجعلها تتعب.",
+"الطول الموجي للضوء المرئي يتراوح بين ______ و ______ نانومتر (nm).",
+"عند عدم وجود ضوء كاف يزيد الإحساس بـ ______.",
+"عناصر الفراغ الداخلي المكملة للتصميم هي: الخامات ومواد التشطيب، و ______، و ______.",
+"من خصائص الإنارة المباشرة أن الظلال تكون ______.",
+"الإنارة غير المباشرة ينتج عنها ______ ظلال.",
+"الإنارة المباشرة تنتج ______ جيد للأجسام ثلاثية الأبعاد.",
+"الإنارة ______ ينتج عنها ظلال خفيفة.",
+"في الإنارة غير المباشرة، تكون الإنارة ______.",
+"في حالة الوهج، إذا تم تشغيل أضواء السيارة الأمامية على المستوى العالي في ______ فإنها ستكون مزعجة لوجود تباين كبير جداً."
+];
+
+let currentFill = 0;
+let studentAnswers = [];
+
+function startFillIn() {
+    document.getElementById('essayPage').classList.remove('active');
+    document.getElementById('fillPage').classList.add('active');
+    showFillQuestion();
+}
+
+function showFillQuestion() {
+    document.getElementById('fillQ').textContent = fillQuestions[currentFill];
+    document.getElementById('fillAns').value = '';
+    document.getElementById('fillAns').focus();
+}
+
+function nextFill() {
+    studentAnswers.push(document.getElementById('fillAns').value);
+    currentFill++;
+    if(currentFill >= fillQuestions.length) {
+        showResult();
+    } else {
+        showFillQuestion();
+    }
+}
+
+function showResult() {
+    document.getElementById('fillPage').classList.remove('active');
+    document.getElementById('resultPage').classList.add('active');
+
+    let html = '<h3>إجاباتك على أسئلة الأكمل:</h3><ol>';
+    studentAnswers.forEach(ans => { html += `<li>${ans}</li>` });
+    html += '</ol>';
+
+    document.getElementById('resultContainer').innerHTML = html;
+}
+</script>
+
+</div>
+</body>
+</html>
